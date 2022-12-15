@@ -7,9 +7,9 @@
     using System.Threading.Tasks;
     using LibGit2Sharp;
 
-    public record ParameterSnapshot<T>(T Data, string? Sha = null);
+    public record ParameterSnapshot<T>(T Data, string Sha = null);
 
-    public record ParameterSnapshot(byte[] Data, string? Sha = null) : ParameterSnapshot<byte[]>(Data, Sha);
+    public record ParameterSnapshot(byte[] Data, string Sha = null) : ParameterSnapshot<byte[]>(Data, Sha);
 
     public class ParameterManager : IDisposable
     {
