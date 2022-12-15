@@ -95,28 +95,28 @@
 
             var sw = new Stopwatch();
             var snapshotCommit = _repo.Lookup<Commit>(data.Sha);
-            sw.LogRestart("Get commit: {0}");
+            // sw.LogRestart("Get commit: {0}");
 
             var snapshotBranch = _repo.CreateBranch($"temp_{DateTime.Now.Millisecond}", snapshotCommit);
-            sw.LogRestart("Create branch: {0}");
+            // sw.LogRestart("Create branch: {0}");
 
             Commands.Checkout(_repo, snapshotBranch);
-            sw.LogRestart("Checkout1: {0}");
+            // sw.LogRestart("Checkout1: {0}");
 
             await UploadAndCommit(data, writer);
 
             Commands.Checkout(_repo, Master);
-            sw.LogRestart("Checkout2: {0}");
+            // sw.LogRestart("Checkout2: {0}");
 
             var result = _repo.Merge(snapshotBranch, Commiter, new MergeOptions());
-            sw.LogRestart("Merge: {0}");
+            // sw.LogRestart("Merge: {0}");
 
             if (result.Status != MergeStatus.Conflicts)
                 return true;
  
             Console.WriteLine($"{_repo.Index.Conflicts.Count()} conflicts occured, rolling back...");
             _repo.Reset(ResetMode.Hard); // rollback 
-            sw.LogRestart("Rollback: {0}");
+            // sw.LogRestart("Rollback: {0}");
 
             return false;
         }
@@ -135,13 +135,13 @@
                 await writer(file, data.Data);
             }
 
-            sw.LogRestart("Write: {0}");
+            // sw.LogRestart("Write: {0}");
 
             Commands.Stage(_repo, "*");
-            sw.LogRestart("Stage: {0}");
+            // sw.LogRestart("Stage: {0}");
 
             _repo.Commit("Upload new version", Commiter, Commiter);
-            sw.LogRestart("Commit: {0}");
+            // sw.LogRestart("Commit: {0}");
         }
 
         private static async ValueTask<byte[]> ReadBytes(Stream stream)

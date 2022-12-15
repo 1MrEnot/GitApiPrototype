@@ -40,7 +40,7 @@ namespace GitApiPrototype
                 }
             });
             Console.WriteLine($"Second update upload success: {conflictFail}");
-
+ 
             var secondSuccess = await manager.UploadJsonUpdate(initialSnapshot with
             {
                 Data = initialSnapshot.Data with
