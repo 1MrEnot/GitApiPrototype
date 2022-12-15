@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Text.Json;
     using System.Threading.Tasks;
     using LibGit2Sharp;
@@ -110,7 +111,14 @@
             var result = _repo.Merge(snapshotBranch, Commiter, new MergeOptions());
             sw.LogRestart("Merge: {0}");
 
-            return result.Status != MergeStatus.Conflicts;
+            if (result.Status != MergeStatus.Conflicts)
+                return true;
+ 
+            Console.WriteLine($"{_repo.Index.Conflicts.Count()} conflicts occured, rolling back...");
+            _repo.Reset(ResetMode.Hard); // rollback 
+            sw.LogRestart("Rollback: {0}");
+
+            return false;
         }
 
         private async Task UploadAndCommit<T>(ParameterSnapshot<T> data, Func<Stream, T, Task> writer)

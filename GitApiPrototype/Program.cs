@@ -23,15 +23,25 @@ namespace GitApiPrototype
             var initialSnapshot = await manager.GetJsonSnapshot<Config>();
             Console.WriteLine($"Initial snapshot: {initialSnapshot}");
 
-            var updatedSnapshot1 = initialSnapshot with
+            var firstSuccess = await manager.UploadJsonUpdate(initialSnapshot with
             {
                 Data = initialSnapshot.Data with
                 {
                     Id = "2"
                 }
-            };
+            });
+            Console.WriteLine($"First update upload success: {firstSuccess}");
 
-            var updatedSnapshot2 = initialSnapshot with
+            var conflictFail = await manager.UploadJsonUpdate(initialSnapshot with
+            {
+                Data = initialSnapshot.Data with
+                {
+                    Id = "3"
+                }
+            });
+            Console.WriteLine($"Second update upload success: {conflictFail}");
+
+            var secondSuccess = await manager.UploadJsonUpdate(initialSnapshot with
             {
                 Data = initialSnapshot.Data with
                 {
@@ -45,13 +55,8 @@ namespace GitApiPrototype
                         }
                     }
                 }
-            };
-
-            var firstSuccess = await manager.UploadJsonUpdate(updatedSnapshot1);
-            Console.WriteLine($"First update upload success: {firstSuccess}");
-
-            var secondSuccess = await manager.UploadJsonUpdate(updatedSnapshot2);
-            Console.WriteLine($"Second update upload success: {secondSuccess}");
+            });
+            Console.WriteLine($"Third update upload success: {secondSuccess}");
 
             var resultSnapshot = await manager.GetJsonSnapshot<Config>();
             Console.WriteLine($"Result snapshot: {resultSnapshot}");        
