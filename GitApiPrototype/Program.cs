@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-
+using System.IO;
 
 namespace GitApiPrototype
 {
@@ -8,9 +8,11 @@ namespace GitApiPrototype
     {
         public static async Task Main(string[] args)
         {
-            var repoPath = @$".\test_{DateTime.Now.Millisecond}";
+            var tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Console.WriteLine($"Working with {Path.GetFullPath(tempDirectory)}");
 
-            using var manager = ParameterManager.Create(repoPath);
+            using var manager = ParameterManager.Create(tempDirectory);
+
             var initialVersion = new Config("1", new[]
             {
                 new Playlist("1-1", 1, 1),
